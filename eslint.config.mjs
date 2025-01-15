@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import globals from "globals";
 import pluginJs from "@eslint/js";
 import tsPlugin from "@typescript-eslint/eslint-plugin";
