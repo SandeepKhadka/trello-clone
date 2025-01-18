@@ -10,7 +10,7 @@ import {
   BottomSheetModal,
   BottomSheetModalProvider,
 } from '@gorhom/bottom-sheet';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ModalType } from '@/types/enums';
 import AuthModal from '@/components/AuthModal';
 
@@ -34,12 +34,13 @@ export default function Index() {
         title: "Can't log in or sign up?",
       },
       (selectedIndex: number | undefined) => {
-        console.log(selectedIndex);
+        // console.log(selectedIndex);
       }
     );
   };
 
   const showModal = async (type: ModalType) => {
+    console.log('Opening Modal with type:', type);
     setAuthType(type);
     bottomSheetModalRef.current?.present();
   };
@@ -51,11 +52,15 @@ export default function Index() {
         appearsOnIndex={0}
         disappearsOnIndex={-1}
         {...props}
-        onPress={() => bottomSheetModalRef.current?.close}
+        onPress={() => bottomSheetModalRef.current?.close()}
       />
     ),
     []
   );
+  useEffect(() => {
+    bottomSheetModalRef.current?.present();
+  }, []);
+
   return (
     <BottomSheetModalProvider>
       <View
@@ -162,6 +167,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.primary,
     alignItems: 'center',
+    paddingHorizontal: 10,
   },
   image: {
     height: 450,
@@ -170,25 +176,25 @@ const styles = StyleSheet.create({
   },
   description: {
     color: '#fff',
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 500,
     paddingTop: 20,
   },
   btn: {
     width: '100%',
     marginTop: 10,
-    paddingVertical: 12,
+    paddingVertical: 10,
     borderWidth: 1,
     borderColor: '#fff',
     borderRadius: 12,
   },
   btnText: {
-    fontSize: 24,
+    fontSize: 20,
     textAlign: 'center',
     color: '#ffffffd2',
   },
   infoText: {
-    fontSize: 18,
+    fontSize: 16,
     textAlign: 'center',
     color: '#ffffffd2',
   },
