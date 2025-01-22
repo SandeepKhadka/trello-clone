@@ -7,15 +7,12 @@ import { useActionSheet } from '@expo/react-native-action-sheet';
 import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetBackdropProps,
-  BottomSheetModal,
   BottomSheetModalProvider,
   BottomSheetView,
 } from '@gorhom/bottom-sheet';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ModalType } from '@/types/enums';
 import AuthModal from '@/components/AuthModal';
-import BottomModalSheet from '@/components/BottomSheet';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export default function Index() {
   const { top } = useSafeAreaInsets();
@@ -45,9 +42,7 @@ export default function Index() {
   };
 
   const showModal = async (type: ModalType) => {
-    console.log('Opening Modal with type:', type);
     setAuthType(type);
-    // bottomSheetModalRef.current?.present();
     bottomSheetRef.current?.expand();
   };
 
@@ -56,7 +51,7 @@ export default function Index() {
       <BottomSheetBackdrop
         opacity={0.2}
         appearsOnIndex={0}
-        disappearsOnIndex={-1}
+        disappearsOnIndex={0}
         {...props}
         onPress={() => bottomSheetRef.current?.close()}
       />
@@ -68,7 +63,7 @@ export default function Index() {
   }, []);
 
   return (
-    <GestureHandlerRootView>
+    <BottomSheetModalProvider>
       <View
         style={[
           styles.container,
@@ -165,8 +160,7 @@ export default function Index() {
           <AuthModal authType={authType} />
         </BottomSheetView>
       </BottomSheet>
-      {/* <BottomModalSheet /> */}
-    </GestureHandlerRootView>
+    </BottomSheetModalProvider>
   );
 }
 

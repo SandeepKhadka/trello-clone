@@ -33,7 +33,7 @@ interface AuthModalProps {
 }
 const AuthModal = ({ authType }: AuthModalProps) => {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
       <Text>AuthModal{authType}</Text>
     </View>
   );
