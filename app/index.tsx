@@ -13,6 +13,7 @@ import {
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ModalType } from '@/types/enums';
 import AuthModal from '@/components/AuthModal';
+import BottomModalSheet from '@/components/BottomSheet';
 
 export default function Index() {
   const { top } = useSafeAreaInsets();
@@ -147,8 +148,7 @@ export default function Index() {
           </Text>
         </View>
       </View>
-      <BottomSheetModal
-        ref={bottomSheetModalRef}
+      {/* <BottomSheetModal
         index={0}
         backdropComponent={renderBackdrop}
         snapPoints={snapPoints}
@@ -157,7 +157,8 @@ export default function Index() {
         enablePanDownToClose
       >
         <AuthModal authType={authType} />
-      </BottomSheetModal>
+      </BottomSheetModal> */}
+      <BottomModalSheet />
     </BottomSheetModalProvider>
   );
 }
