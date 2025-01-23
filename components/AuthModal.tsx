@@ -5,6 +5,7 @@ import microsoftImage from '@/assets/images/login/microsoft.png';
 import appleImage from '@/assets/images/login/apple.png';
 import slackImage from '@/assets/images/login/slack.png';
 import { Ionicons } from '@expo/vector-icons';
+import { useOAuth, useSignIn, useSignUp } from '@clerk/clerk-expo';
 
 const LOGIN_OPTIONS = [
   {
@@ -33,11 +34,73 @@ interface AuthModalProps {
   authType: ModalType | null;
 }
 
-const selectedAuth = (strategy: AuthStrategy) => {
-  console.log('Selected Auth', strategy);
-};
-
 const AuthModal = ({ authType }: AuthModalProps) => {
+  const { signUp, setActive } = useSignUp();
+  const { signIn } = useSignIn();
+  const { startOAuthFlow: googleAuth } = useOAuth({
+    strategy: AuthStrategy.Google,
+  });
+  const { startOAuthFlow: microsoftAuth } = useOAuth({
+    strategy: AuthStrategy.Microsoft,
+  });
+  const { startOAuthFlow: appleAuth } = useOAuth({
+    strategy: AuthStrategy.Apple,
+  });
+  const { startOAuthFlow: slackAuth } = useOAuth({
+    strategy: AuthStrategy.Slack,
+  });
+
+  const onSelectedAuth = async (strategy: AuthStrategy) => {
+    if (!signIn || !signUp) return;
+
+    const selectedAuth = {
+      [AuthStrategy.Google]: googleAuth,
+      [AuthStrategy.Microsoft]: microsoftAuth,
+      [AuthStrategy.Apple]: appleAuth,
+      [AuthStrategy.Slack]: slackAuth,
+    }[strategy];
+
+    const userExistsButNeedsToSignIn =
+      signUp.verifications.externalAccount.status === 'transferable' &&
+      signUp.verifications.externalAccount.error?.code ===
+        'external_account_exists';
+
+    if (userExistsButNeedsToSignIn) {
+      const res = await signIn.create({ transfer: true });
+
+      if (res.status === 'complete') {
+        setActive({
+          session: res.createdSessionId,
+        });
+      }
+    }
+
+    const userNeedsToBeCreated =
+      signIn.firstFactorVerification.status === 'transferable';
+
+    if (userNeedsToBeCreated) {
+      const res = await signUp.create({
+        transfer: true,
+      });
+
+      if (res.status === 'complete') {
+        setActive({
+          session: res.createdSessionId,
+        });
+      }
+    } else {
+      try {
+        const { createdSessionId } = await selectedAuth();
+        if (createdSessionId) {
+          setActive({ session: createdSessionId });
+          console.log('Session created: ', createdSessionId);
+        }
+      } catch (error) {
+        console.error('Error starting OAuth flow: ', error);
+      }
+    }
+  };
+
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.innerContainer}>
@@ -50,7 +113,7 @@ const AuthModal = ({ authType }: AuthModalProps) => {
         <TouchableOpacity
           key={strategy}
           style={styles.innerContainer}
-          onPress={() => selectedAuth(strategy)}
+          onPress={() => onSelectedAuth(strategy)}
         >
           <Image
             source={icon}
