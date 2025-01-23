@@ -19,7 +19,7 @@ export default [
           jsx: true,
         },
       },
-      globals: globals.browser,
+      globals: { ...globals.browser, ...globals.node },
     },
     plugins: {
       prettier: prettierPlugin,

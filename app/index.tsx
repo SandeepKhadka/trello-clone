@@ -4,25 +4,26 @@ import trelloImage from '@/assets/images/login/trello.png';
 import { Colors } from '@/constants/Colors';
 import * as WebBrowser from 'expo-web-browser';
 import { useActionSheet } from '@expo/react-native-action-sheet';
-import {
+import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetBackdropProps,
-  BottomSheetModal,
   BottomSheetModalProvider,
+  BottomSheetView,
 } from '@gorhom/bottom-sheet';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ModalType } from '@/types/enums';
 import AuthModal from '@/components/AuthModal';
-import BottomModalSheet from '@/components/BottomSheet';
 
 export default function Index() {
   const { top } = useSafeAreaInsets();
   const { showActionSheetWithOptions } = useActionSheet();
-  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-  const snapPoints = useMemo(() => ['33%'], []);
+  // const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const bottomSheetRef = useRef<BottomSheet>(null);
+
+  const snapPoints = useMemo(() => ['10%', '33%'], []);
   const [authType, setAuthType] = useState<ModalType | null>(null);
   const openLink = () => {
-    WebBrowser.openBrowserAsync('https://google.com');
+    WebBrowser.openBrowserAsync('https://www.sandeepkhadka49.com.np');
   };
   const openActionSheet = async () => {
     const options = ['View support docs', 'Contact us', 'Cancel'];
@@ -41,9 +42,8 @@ export default function Index() {
   };
 
   const showModal = async (type: ModalType) => {
-    console.log('Opening Modal with type:', type);
     setAuthType(type);
-    bottomSheetModalRef.current?.present();
+    bottomSheetRef.current?.expand();
   };
 
   const renderBackdrop = useCallback(
@@ -51,15 +51,15 @@ export default function Index() {
       <BottomSheetBackdrop
         opacity={0.2}
         appearsOnIndex={0}
-        disappearsOnIndex={-1}
+        disappearsOnIndex={0}
         {...props}
-        onPress={() => bottomSheetModalRef.current?.close()}
+        onPress={() => bottomSheetRef.current?.close()}
       />
     ),
     []
   );
   useEffect(() => {
-    bottomSheetModalRef.current?.present();
+    bottomSheetRef?.current?.snapToIndex(-1);
   }, []);
 
   return (
@@ -148,17 +148,19 @@ export default function Index() {
           </Text>
         </View>
       </View>
-      {/* <BottomSheetModal
-        index={0}
+      <BottomSheet
+        ref={bottomSheetRef}
         backdropComponent={renderBackdrop}
         snapPoints={snapPoints}
         handleComponent={null}
         enableOverDrag={false}
         enablePanDownToClose
+        index={-1}
       >
-        <AuthModal authType={authType} />
-      </BottomSheetModal> */}
-      <BottomModalSheet />
+        <BottomSheetView>
+          <AuthModal authType={authType} />
+        </BottomSheetView>
+      </BottomSheet>
     </BottomSheetModalProvider>
   );
 }
