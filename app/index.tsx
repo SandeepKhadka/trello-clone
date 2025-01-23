@@ -36,7 +36,7 @@ export default function Index() {
         title: "Can't log in or sign up?",
       },
       (selectedIndex: number | undefined) => {
-        // console.log(selectedIndex);
+        console.log(selectedIndex);
       }
     );
   };
