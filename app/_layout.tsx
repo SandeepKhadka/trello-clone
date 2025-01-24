@@ -11,24 +11,16 @@ const CLERK_PUBLISHABLE_KEY = process.env
 const tokenCache = {
   async getToken(key: string) {
     try {
-      const item = await SecureStore.getItemAsync(key);
-      // if (item) {
-      //   console.log(`${key} was used 🔐 \n`);
-      // } else {
-      //   console.log('No values stored under key: ' + key);
-      // }
-      return item;
-    } catch (error) {
-      console.error('secure store get item error: ', error);
-      await SecureStore.deleteItemAsync(key);
+      return SecureStore.getItemAsync(key);
+    } catch (err) {
       return null;
     }
   },
-  async saveToken(key: string, token: string) {
+  async saveToken(key: string, value: string) {
     try {
-      return SecureStore.setItemAsync(key, token);
-    } catch (error) {
-      console.error('secure store set item error: ', error);
+      return SecureStore.setItemAsync(key, value);
+    } catch (err) {
+      return;
     }
   },
 };
