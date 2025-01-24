@@ -68,7 +68,7 @@ export default function Index() {
         style={[
           styles.container,
           {
-            paddingTop: top + 30,
+            paddingTop: top + 8,
           },
         ]}
       >
